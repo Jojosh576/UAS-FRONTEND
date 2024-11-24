@@ -4,13 +4,16 @@ angular.module('loginApp', [])
     $scope.errorMessage = '';
 
     $scope.login = function() {
-        // Contoh validasi sederhana
-        if ($scope.user.username === 'admin' && $scope.user.password === 'password') {
-            // Jika login berhasil, alihkan ke index.html
-            $window.location.href = 'index.html';
+        const validUsername = 'sindu'; // Ganti dengan username yang valid
+        const validPassword = 'sindu111'; // Ganti dengan password yang valid
+
+        if ($scope.user.username === validUsername && $scope.user.password === validPassword) {
+            $window.location.href = 'index.html'; // Alihkan ke halaman index.html
         } else {
-            // Jika login gagal, tampilkan pesan kesalahan
-            $scope.errorMessage = 'Username atau password salah.';
+            alert('Username atau password salah!');
         }
     };
+    $scope.goToSignup = function() {
+        $window.location.href = 'signup.html';
+    }
 });
