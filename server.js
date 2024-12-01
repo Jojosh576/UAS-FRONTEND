@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 const app = express();
 app.use(bodyParser.json());
@@ -22,13 +23,20 @@ app.get('/', (req, res) => {
 app.post('/api/signup', async (req, res) => {
     const { username, password } = req.body;
     try {
+        // Hash the password before storing it
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         const result = await pool.query(
             'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
-            [username, password]
+            [username, hashedPassword]
         );
-        res.status(201).json(result.rows[0]);
+        res.status(201).json({ message: 'Signup successful', user: result.rows[0] });
     } catch (err) {
-        res.status(500).json({ error: 'Database error' });
+        if (err.code === '23505') { // Unique violation error code
+            res.status(400).json({ error: 'Username already exists' });
+        } else {
+            res.status(500).json({ error: 'Database error' });
+        }
     }
 });
 

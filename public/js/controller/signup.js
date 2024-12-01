@@ -4,10 +4,11 @@ controller('SignupController', function($scope, $http, $window) {
     $scope.signup = function() {
        $http.post('/api/signup', $scope.user)
        .then(function(response) {
-           // Show a success message
            alert('Signup successful!');
-           // Redirect to the index page
            $window.location.href = '/views/index.html';
+       })
+       .catch(function(error) {
+           alert('Signup failed: ' + error.data.message);
        });
    };
 });
